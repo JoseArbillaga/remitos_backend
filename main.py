@@ -70,7 +70,7 @@ async def health_check():
 
 # Importar modelos para asegurar que se crean las tablas
 try:
-    from app.models import remito, user
+    from app.models import remito
 except ImportError:
     print("⚠️ Algunos modelos no están disponibles")
 
@@ -79,4 +79,4 @@ create_tables()
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run(app, host="0.0.0.0", port=8000, reload=False)

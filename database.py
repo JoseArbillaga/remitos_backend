@@ -45,7 +45,7 @@ def init_db():
     Inicializar la base de datos creando todas las tablas
     """
     # Importar modelos para que sean registrados
-    from app.models import user, remito
+    from app.models import remito
     
     # Crear todas las tablas
     Base.metadata.create_all(bind=engine)

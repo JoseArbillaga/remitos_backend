@@ -425,6 +425,55 @@ async def validar_establecimiento_carnico(
             detail=f"Error validando establecimiento: {str(e)}"
         )
 
+@router.get("/consultar-remitos/{cuit}", summary="Consultar remitos emitidos por CUIT")
+async def consultar_remitos_emitidos(
+    cuit: str,
+    fecha_desde: Optional[str] = Query(None, description="Fecha desde (YYYY-MM-DD)"),
+    fecha_hasta: Optional[str] = Query(None, description="Fecha hasta (YYYY-MM-DD)")
+):
+    """
+    Consulta remitos emitidos por un CUIT específico en el sector cárnico
+    
+    Este endpoint permite consultar todos los remitos emitidos por una empresa
+    del sector cárnico, con filtros opcionales de fecha.
+    
+    Args:
+        cuit: CUIT del emisor (11 dígitos)
+        fecha_desde: Fecha desde para filtrar (opcional)
+        fecha_hasta: Fecha hasta para filtrar (opcional)
+    
+    Returns:
+        Información completa de remitos emitidos con detalles de productos
+    """
+    if not _validar_cuit(cuit):
+        raise HTTPException(
+            status_code=400,
+            detail="Formato de CUIT inválido"
+        )
+    
+    try:
+        cliente = AFIPCarnicoClient()
+        remitos = cliente.consultar_remitos_emitidos(cuit, fecha_desde, fecha_hasta)
+        
+        return {
+            "cuit_consultado": cuit,
+            "filtros": {
+                "fecha_desde": fecha_desde,
+                "fecha_hasta": fecha_hasta
+            },
+            "timestamp": datetime.now().isoformat(),
+            "datos": remitos,
+            "fuente": "AFIP-Carnicos",
+            "ambiente": AMBIENTE,
+            "certificado": CERTIFICADO_ID
+        }
+        
+    except Exception as e:
+        raise HTTPException(
+            status_code=500,
+            detail=f"Error consultando remitos: {str(e)}"
+        )
+
 # Funciones auxiliares
 def _validar_cuit(cuit: str) -> bool:
     """Valida el formato básico del CUIT"""
