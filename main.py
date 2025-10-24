@@ -38,6 +38,22 @@ try:
 except ImportError:
     print("⚠️ Rutas asíncronas no disponibles")
 
+# Importar y incluir rutas de AFIP
+try:
+    from app.routes import afip_routes
+    app.include_router(afip_routes.router, prefix="/api/v1", tags=["afip"])
+    print("✅ Rutas AFIP cargadas correctamente")
+except ImportError as e:
+    print(f"⚠️ Rutas AFIP no disponibles: {e}")
+
+# Importar y incluir rutas de AFIP Cárnicos
+try:
+    from app.routes import afip_carnicos_routes
+    app.include_router(afip_carnicos_routes.router, prefix="/api/v1", tags=["afip-carnicos"])
+    print("✅ Rutas AFIP Cárnicos cargadas correctamente")
+except ImportError as e:
+    print(f"⚠️ Rutas AFIP Cárnicos no disponibles: {e}")
+
 @app.get("/")
 async def root():
     """Endpoint básico de bienvenida"""

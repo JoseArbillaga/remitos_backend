@@ -58,3 +58,6 @@ class PasswordChange(BaseModel):
     """Esquema para cambio de contraseña"""
     current_password: str
     new_password: str = Field(..., min_length=6, max_length=50)
+
+# Alias para compatibilidad
+User = UserResponse
