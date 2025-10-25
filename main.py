@@ -41,7 +41,7 @@ except ImportError:
 # Importar y incluir rutas de AFIP
 try:
     from app.routes import afip_routes
-    app.include_router(afip_routes.router, prefix="/api/v1", tags=["afip"])
+    app.include_router(afip_routes.router, prefix="/api/v1/afip")
     print("✅ Rutas AFIP cargadas correctamente")
 except ImportError as e:
     print(f"⚠️ Rutas AFIP no disponibles: {e}")
@@ -49,7 +49,7 @@ except ImportError as e:
 # Importar y incluir rutas de AFIP Cárnicos
 try:
     from app.routes import afip_carnicos_routes
-    app.include_router(afip_carnicos_routes.router, prefix="/api/v1", tags=["afip-carnicos"])
+    app.include_router(afip_carnicos_routes.router, prefix="/api/v1/carnicos")
     print("✅ Rutas AFIP Cárnicos cargadas correctamente")
 except ImportError as e:
     print(f"⚠️ Rutas AFIP Cárnicos no disponibles: {e}")
@@ -70,13 +70,20 @@ async def health_check():
 
 # Importar modelos para asegurar que se crean las tablas
 try:
-    from app.models import remito, user
-except ImportError:
-    print("⚠️ Algunos modelos no están disponibles")
+    from app.models import remito
+    print("✅ Modelo remito cargado")
+except ImportError as e:
+    print(f"⚠️ Error cargando modelo remito: {e}")
+
+try:
+    from app.models import user
+    print("✅ Modelo user cargado")
+except ImportError as e:
+    print(f"⚠️ Error cargando modelo user: {e}")
 
 # Crear tablas al iniciar
 create_tables()
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run(app, host="0.0.0.0", port=8000, reload=False)

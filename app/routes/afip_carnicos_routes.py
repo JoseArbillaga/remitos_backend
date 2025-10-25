@@ -40,7 +40,7 @@ class RemitoCarnicoRequest(BaseModel):
     transporte: Optional[Dict[str, str]] = Field(None, description="Datos del transporte")
 
 # Router para endpoints cárnicos
-router = APIRouter(prefix="/afip/carnicos", tags=["AFIP Cárnicos"])
+router = APIRouter(tags=["AFIP Cárnicos"])
 
 @router.get("/", summary="Estado sistema cárnico AFIP")
 async def estado_sistema_carnico():

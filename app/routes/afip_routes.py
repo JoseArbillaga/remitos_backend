@@ -24,7 +24,7 @@ from app.dependencies.auth import get_current_active_user
 from app.schemas.user import User
 
 # Router para endpoints AFIP
-router = APIRouter(prefix="/afip", tags=["AFIP Integration"])
+router = APIRouter(tags=["AFIP Integration"])
 
 @router.get("/", summary="Estado del sistema AFIP")
 async def afip_status():

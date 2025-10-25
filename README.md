@@ -4,14 +4,15 @@ Sistema backend empresarial para la gestión de remitos con integración automá
 
 ## ✅ Estado del Proyecto
 
-**🎉 PROYECTO COMPLETAMENTE FUNCIONAL** - Probado y verificado el 23 de octubre de 2025
+**🎉 PROYECTO COMPLETAMENTE FUNCIONAL** - Actualizado el 25 de octubre de 2025
 
 - ✅ **Sistema base funcionando** - API REST operativa
 - ✅ **Autenticación JWT** - Tokens generados y verificados
 - ✅ **Base de datos** - SQLite inicializada correctamente  
 - ✅ **Validaciones AFIP** - CUIT argentino validando con algoritmo oficial
+- ✅ **Integración AFIP Cárnicos** - Endpoints específicos para sector cárnico
 - ✅ **Documentación** - Swagger UI disponible en `/docs`
-- ✅ **Arquitectura completa** - 32 archivos Python, estructura modular
+- ✅ **Arquitectura completa** - Estructura modular sin duplicaciones
 - ✅ **Tests incluidos** - Scripts de prueba del sistema y API
 
 ## 🚀 Características
@@ -177,21 +178,29 @@ Authorization: Bearer <token>
 ### Endpoints Principales
 
 #### Autenticación
-- `POST /auth/login` - Iniciar sesión
-- `POST /auth/register` - Registrar usuario (solo Admin)
-- `GET /auth/me` - Obtener perfil actual
+- `POST /api/v1/auth/login` - Iniciar sesión
+- `POST /api/v1/auth/register` - Registrar usuario (solo Admin)
+- `GET /api/v1/auth/me` - Obtener perfil actual
 
 #### Remitos
-- `GET /remitos` - Listar remitos
-- `POST /remitos` - Crear remito
-- `GET /remitos/{id}` - Obtener remito específico
-- `PUT /remitos/{id}` - Actualizar remito
-- `DELETE /remitos/{id}` - Eliminar remito
+- `GET /api/v1/remitos` - Listar remitos
+- `POST /api/v1/remitos` - Crear remito
+- `GET /api/v1/remitos/{id}` - Obtener remito específico
+- `PUT /api/v1/remitos/{id}` - Actualizar remito
+- `DELETE /api/v1/remitos/{id}` - Eliminar remito
 
-#### AFIP
-- `POST /remitos/{id}/enviar-afip` - Enviar remito a AFIP
-- `POST /remitos/lote-afip` - Enviar lote masivo
-- `GET /afip/status/{task_id}` - Estado de tarea asíncrona
+#### AFIP Integration
+- `GET /api/v1/afip/` - Estado del sistema AFIP
+- `GET /api/v1/afip/diagnostico` - Diagnóstico completo AFIP
+- `GET /api/v1/afip/padron-a4/{cuit}` - Consultar Padrón A4
+- `GET /api/v1/afip/datos-completos/{cuit}` - Extracción completa de datos
+
+#### AFIP Cárnicos
+- `GET /api/v1/carnicos/` - Estado sistema cárnico AFIP
+- `GET /api/v1/carnicos/establecimientos/{cuit}` - Establecimientos cárnicos
+- `GET /api/v1/carnicos/productos` - Catálogo productos cárnicos
+- `POST /api/v1/carnicos/remito-automatico` - Generar remito cárnico automático
+- `POST /api/v1/carnicos/batch-remitos` - Generación masiva de remitos
 
 ### Roles y Permisos
 
