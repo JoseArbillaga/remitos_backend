@@ -40,11 +40,11 @@ class AFIPCarnicoClient:
         }
         
         print(f"""
-🥩 CLIENTE AFIP CÁRNICO INICIADO
+CLIENTE AFIP CARNICO INICIADO
 ================================
 Certificado: {self.certificado_id}
 Ambiente: {self.ambiente}
-Servicios cárnicos: {len(self.urls_carnico)}
+Servicios carnicos: {len(self.urls_carnico)}
 ================================
 """)
     
@@ -121,7 +121,7 @@ Servicios cárnicos: {len(self.urls_carnico)}
             "ambiente": self.ambiente
         }
         
-        print(f"✅ Encontrados {len(establecimientos['establecimientos'])} establecimientos")
+        print(f"Encontrados {len(establecimientos['establecimientos'])} establecimientos")
         for est in establecimientos['establecimientos']:
             print(f"   - {est['numero_senasa']}: {est['nombre']} ({est['tipo']})")
         
@@ -132,7 +132,7 @@ Servicios cárnicos: {len(self.urls_carnico)}
         Obtiene el catálogo de productos cárnicos autorizados
         Con códigos SENASA y nomencladores AFIP
         """
-        print("📋 Obteniendo catálogo de productos cárnicos...")
+        print("Obteniendo catalogo de productos carnicos...")
         
         productos = {
             "categorias": {
@@ -229,7 +229,7 @@ Servicios cárnicos: {len(self.urls_carnico)}
         }
         
         total_productos = sum(len(cat["productos"]) for cat in productos["categorias"].values())
-        print(f"✅ Catálogo cargado: {total_productos} productos en {len(productos['categorias'])} categorías")
+        print(f"Catalogo cargado: {total_productos} productos en {len(productos['categorias'])} categorias")
         
         return productos
     
@@ -296,7 +296,7 @@ Servicios cárnicos: {len(self.urls_carnico)}
         }
         
         total_animales = sum(s["animales_registrados"] for s in trazabilidad["sistemas_trazabilidad"].values())
-        print(f"✅ Trazabilidad: {total_animales} animales registrados")
+        print(f"Trazabilidad: {total_animales} animales registrados")
         
         return trazabilidad
     
@@ -369,12 +369,106 @@ Servicios cárnicos: {len(self.urls_carnico)}
             "certificado_usado": self.certificado_id
         }
         
-        print(f"✅ Remito generado automáticamente: {numero_remito}")
+        print(f"Remito generado automaticamente: {numero_remito}")
         print(f"   - Productos: {len(remito_automatico['productos'])}")
         print(f"   - Peso total: {remito_automatico['totales']['peso_total_kg']} kg")
         print(f"   - Valor total: ${remito_automatico['totales']['valor_total']:.2f}")
         
         return remito_automatico
+    
+    def consultar_remitos_emitidos(self, cuit: str, fecha_desde: str = None, fecha_hasta: str = None) -> Dict[str, Any]:
+        """
+        Consulta remitos emitidos por un CUIT específico
+        
+        Args:
+            cuit: CUIT del emisor
+            fecha_desde: Fecha desde (formato YYYY-MM-DD), opcional
+            fecha_hasta: Fecha hasta (formato YYYY-MM-DD), opcional
+            
+        Returns:
+            Dict con la información de remitos emitidos
+        """
+        print(f"Consultando remitos emitidos por CUIT: {cuit}")
+        
+        try:
+            # Simular consulta a AFIP (en producción sería una llamada real al web service)
+            # Por ahora devolvemos datos de ejemplo para demostrar la funcionalidad
+            
+            from datetime import datetime, timedelta
+            import random
+            
+            # Generar datos de ejemplo basados en el CUIT consultado
+            remitos_ejemplo = []
+            
+            # Crear algunos remitos de ejemplo
+            for i in range(random.randint(3, 8)):
+                fecha_emision = datetime.now() - timedelta(days=random.randint(1, 30))
+                numero_remito = f"00001-0000{random.randint(1000, 9999)}"
+                
+                remito = {
+                    "numero": numero_remito,
+                    "fecha_emision": fecha_emision.strftime("%Y-%m-%d"),
+                    "cuit_emisor": cuit,
+                    "razon_social_emisor": f"Empresa Carnica {cuit[-4:]}",
+                    "cuit_destinatario": f"3099999{random.randint(100, 999)}9",
+                    "destinatario": f"Frigorifico Destino {random.randint(1, 10)}",
+                    "productos": [
+                        {
+                            "codigo": f"CARNE{random.randint(100, 999)}",
+                            "descripcion": random.choice([
+                                "Carne bovina fresca", 
+                                "Chorizo fresco", 
+                                "Costilla de cerdo",
+                                "Pechuga de pollo",
+                                "Cordero entero"
+                            ]),
+                            "cantidad": random.randint(10, 500),
+                            "peso_unitario": round(random.uniform(0.5, 2.0), 2),
+                            "precio_unitario": round(random.uniform(100, 300), 2)
+                        }
+                        for _ in range(random.randint(1, 4))
+                    ],
+                    "estado": random.choice(["Emitido", "En transito", "Entregado"]),
+                    "observaciones": f"Remito de prueba generado para CUIT {cuit}"
+                }
+                
+                # Calcular totales
+                peso_total = sum(p["cantidad"] * p["peso_unitario"] for p in remito["productos"])
+                valor_total = sum(p["cantidad"] * p["precio_unitario"] for p in remito["productos"])
+                
+                remito["totales"] = {
+                    "peso_total_kg": round(peso_total, 2),
+                    "valor_total": round(valor_total, 2),
+                    "cantidad_productos": len(remito["productos"])
+                }
+                
+                remitos_ejemplo.append(remito)
+            
+            resultado = {
+                "consulta": {
+                    "cuit": cuit,
+                    "fecha_desde": fecha_desde or "2024-01-01",
+                    "fecha_hasta": fecha_hasta or datetime.now().strftime("%Y-%m-%d"),
+                    "fecha_consulta": datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                },
+                "remitos": remitos_ejemplo,
+                "resumen": {
+                    "total_remitos": len(remitos_ejemplo),
+                    "peso_total_kg": sum(r["totales"]["peso_total_kg"] for r in remitos_ejemplo),
+                    "valor_total": sum(r["totales"]["valor_total"] for r in remitos_ejemplo)
+                }
+            }
+            
+            print(f"Consulta exitosa: {len(remitos_ejemplo)} remitos encontrados")
+            return resultado
+            
+        except Exception as e:
+            print(f"Error en consulta remitos: {e}")
+            return {
+                "error": str(e),
+                "consulta": {"cuit": cuit},
+                "remitos": []
+            }
     
     def _obtener_datos_padron_simplificado(self, cuit: str) -> Dict[str, Any]:
         """Obtiene datos básicos del padrón para el remito"""
@@ -465,7 +559,7 @@ if __name__ == "__main__":
     # Ejemplo de uso
     cuit_test = "24238783522"
     
-    print("\n🧪 DEMO CLIENTE CÁRNICO:")
+    print("\nDEMO CLIENTE CARNICO:")
     
     # 1. Obtener establecimientos
     establecimientos = cliente.obtener_establecimientos_carnicos(cuit_test)
